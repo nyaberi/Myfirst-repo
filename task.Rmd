@@ -1,0 +1,57 @@
+##My project
+
+#Here is the analysis
+
+```{r loading data,echo=TRUE}
+activity<-read.csv("activity.csv",header=T)
+View(activity)
+summary(activity)
+```
+
+# Here is the mean
+```{r mean,echo=TRUE}
+totalsteps<-sum(activity$steps,na.rm = T)
+totalsteps
+library(ggplot2)
+ggplot(activity,aes(x=steps)) + geom_histogram()
+mean<-mean(activity$steps,na.rm = F)
+mean
+median<-median(activity$steps,na.rm = T)
+median
+```
+
+# Average daily activity pattern
+```{r time series plot,echo=TRUE}
+library(ggplot2)
+ggplot(activity,aes(x=interval,y=steps)) + geom_line()
+### 500-600 contains the maximum no of steps
+```
+
+## Imputing missing values
+```{r missing values,echo=TRUE}
+table(is.na(activity))
+library(imputeTS)
+activity<-na_mean(activity)
+summary(activity)
+View(activity)
+library(ggplot2)
+ggplot(activity,aes(x=steps)) + geom_histogram()
+mean1<-mean(activity$steps)
+mean1
+median<-median(activity$steps)
+median
+### The data contains many extreme values and thus imputing the NAs has no significant change
+```
+
+#Weekend and weekday
+```{r weekday,echo=TRUE}
+date<- as.Date(activity$date)
+date
+weekday<-c('Monday','Tuesday','Wednesday','Thursday','Friday')
+activity$typeofDay1<- factor((weekdays(date) %in% weekday), levels = c(FALSE,TRUE), labels= c('weekend','weekday'))
+typeofDay1
+View(activity)
+table(typeofDay1)
+library(ggplot2)
+ggplot(data = activity,aes(interval,steps,color = typeofDay1)) + geom_line() + geom_point() + labs(title = "Pane plot",y="Average no of steps taken",x= "")
+```
